@@ -88,7 +88,7 @@ export async function GET(request) {
 
     const image = await (
         await fetch(
-            `${SCREENSHOTS_API_URL}?url=${encodeURIComponent(url)}&width=600`
+            `${process.env.SCREENSHOTS_API_URL}?url=${encodeURIComponent(url)}&width=600`
         )
     ).arrayBuffer();
 
