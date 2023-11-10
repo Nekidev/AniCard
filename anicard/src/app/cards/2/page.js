@@ -34,7 +34,7 @@ export default function Home() {
         <main className={rubik.className + " w-full flex flex-row"}>
             <img
                 src={searchParams.get('image_url')}
-                className="h-screen"
+                className="h-full max-h-screen"
             />
             <div class="p-8 flex flex-col flex-1 h-screen justify-between" style={{
                 background: adjustBrightness(searchParams.get('bg_color'), 170)
