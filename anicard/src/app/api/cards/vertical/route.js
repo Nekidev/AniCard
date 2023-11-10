@@ -92,11 +92,10 @@ export async function GET(request) {
         )
     ).arrayBuffer();
 
-    const res = new Response(image);
-    res.setHeader("Content-Type", "image/png");
-    res.setHeader(
-        "Cache-Control",
-        "public, immutable, no-transform, s-maxage=86400, max-age=86400"
-    );
-    return res;
+    return new Response(image, {
+        headers: {
+            "Cache-Control": "public, immutable, no-transform, s-maxage=86400, max-age=86400",
+            "Content-Type": "image/png",
+        },
+    });
 }
