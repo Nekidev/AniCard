@@ -94,7 +94,7 @@ export async function GET(request) {
         await fetch(
             `${process.env.SCREENSHOTS_API_URL}?url=${encodeURIComponent(
                 url
-            )}&width=600&scaleFactor=4`
+            )}&width=1200&zoom=2`
         )
     ).arrayBuffer();
 
