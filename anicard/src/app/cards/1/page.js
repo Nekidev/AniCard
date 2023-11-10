@@ -1,3 +1,7 @@
+/*
+Vertical card with poster.
+*/
+
 "use client";
 
 import { Merriweather, Rubik, Roboto_Mono } from "next/font/google";
@@ -27,15 +31,15 @@ export default function Home() {
     const searchParams = useSearchParams()
 
     return (
-        <main className={rubik.className} id="card">
+        <main className={rubik.className}>
             <img
                 src={searchParams.get('image_url')}
                 className="w-full"
             />
             <div class="p-8 flex flex-col gap-16" style={{
-                background: adjustBrightness(searchParams.get('bg_color'), 140)
+                background: adjustBrightness(searchParams.get('bg_color'), 150)
             }}>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                     <span className={"text-base text-black/90 " + roboto_mono.className}>{searchParams.get("season")}</span>
                     <h1 className={"font-black text-5xl text-black/90 " + merriweather.className}>{searchParams.get("title")}</h1>
                     <p className="text-2xl text-black/90">{searchParams.get("type")} - {searchParams.get("duration")} - {searchParams.get("status")}</p>

@@ -41,8 +41,31 @@ query MediaQuery($id:Int) {
     }
 }`;
 
+const card_modes = {
+    1: {
+        width: 1200,
+        zoom: 2,
+    },
+    2: {
+        width: 2400,
+        height: 1000,
+        zoom: 2,
+    },
+};
+
+const encodeGetParams = (p) =>
+    Object.entries(p)
+        .map((kv) => kv.map(encodeURIComponent).join("="))
+        .join("&");
+
 export async function GET(request) {
     const id = parseInt(request.nextUrl.searchParams.get("id"));
+    const mode = request.nextUrl.searchParams.get("mode") || "1";
+
+    if (!card_modes.includes(mode)) {
+        return new Response.json({ message: "Invalid mode" }, { status: 400 });
+    }
+
     const response = await fetch("https://graphql.anilist.co", {
         method: "POST",
         headers: {
@@ -58,9 +81,7 @@ export async function GET(request) {
     });
     const data = await response.json();
 
-    console.log(data);
-
-    const url = `https://ani-card.vercel.app/cards/vertical?image_url=${encodeURIComponent(
+    const url = `https://ani-card.vercel.app/cards/${mode}?image_url=${encodeURIComponent(
         data.data.Media.coverImage.extraLarge
     )}&bg_color=${encodeURIComponent(
         data.data.Media.coverImage.color
@@ -90,11 +111,13 @@ export async function GET(request) {
         capitalizeFirstLetter(data.data.Media.status)
     )}`;
 
+    console.log(url);
+
     const image = await (
         await fetch(
             `${process.env.SCREENSHOTS_API_URL}?url=${encodeURIComponent(
                 url
-            )}&width=1200&zoom=2`
+            )}&${encodeGetParams(card_modes[mode])}`
         )
     ).arrayBuffer();
 
