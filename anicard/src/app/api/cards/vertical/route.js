@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter, getScreenshot } from "@/utils";
+import { capitalizeFirstLetter } from "@/utils";
 
 const animeQuery = `
 query MediaQuery($id:Int) {
@@ -84,7 +84,11 @@ export async function GET(request) {
         capitalizeFirstLetter(data.data.Media.status)
     )}`;
 
-    const image = getScreenshot(url, 600, 100)
+    const image = await (
+        await fetch(
+            `${SCREENSHOTS_API_URL}?url=${encodeURIComponent(url)}&width=600`
+        )
+    ).arrayBuffer();
 
     const res = new Response(image);
     res.setHeader("Content-Type", "image/png");
