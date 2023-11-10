@@ -47,9 +47,9 @@ const card_modes = {
         zoom: 2,
     },
     2: {
-        width: 2400,
-        height: 1000,
-        zoom: 2,
+        width: 1200,
+        height: 500,
+        zoom: 1,
     },
 };
 
