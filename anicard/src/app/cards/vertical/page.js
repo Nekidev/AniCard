@@ -51,8 +51,12 @@ export default function Home() {
 }
 
 function Genre({ title }) {
+    const searchParams = useSearchParams()
+
     return (
-        <div className="p-2 rounded-lg leading-none text-black/90 bg-black/5 text-xl">
+        <div className="p-2 rounded-lg leading-none text-black/90 text-xl" style={{
+            backgroundColor: adjustBrightness(searchParams.get('bg_color'), 130)
+        }}>
             {title}
         </div>
     );
