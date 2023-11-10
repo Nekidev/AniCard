@@ -88,7 +88,7 @@ export async function GET(request) {
     });
     const data = await response.json();
 
-    const url = `http://localhost:3000/cards/vertical?image_url=${encodeURIComponent(
+    const url = `https://ani-card.vercel.app/api/cards/vertical?image_url=${encodeURIComponent(
         data.data.Media.bannerImage
     )}&bg_color=${encodeURIComponent(
         data.data.Media.coverImage.color
