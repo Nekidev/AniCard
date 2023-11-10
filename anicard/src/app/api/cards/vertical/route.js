@@ -110,6 +110,8 @@ export async function GET(request) {
         capitalizeFirstLetter(data.data.Media.source.toLowerCase())
     )}&genres=${encodeURIComponent(data.data.Media.genres.join(","))}&status=${encodeURIComponent(
         capitalizeFirstLetter(data.data.Media.status.toLowerCase())
+    )}&status=${encodeURIComponent(
+        capitalizeFirstLetter(data.data.Media.status.toLowerCase())
     )}`;
     console.log(url);
 
