@@ -1,9 +1,9 @@
 import { randomString, capitalizeFirstLetter } from "@/utils";
 
-import chrome from "chrome-aws-lambda";
-import puppeteer from "puppeteer-core";
+// import chrome from "chrome-aws-lambda";
+// import puppeteer from "puppeteer-core";
 
-export default async function screenshot(url, viewport, selector) {
+async function screenshot(url, viewport, selector) {
     const options = process.env.AWS_REGION
         ? {
               args: chrome.args,
@@ -72,7 +72,7 @@ query MediaQuery($id:Int) {
 }`;
 
 export async function GET(request) {
-    const { id } = request.nextUrl.searchParams.get("id");
+    const id = parseInt(request.nextUrl.searchParams.get("id"));
     const response = await fetch("https://graphql.anilist.co", {
         method: "POST",
         headers: {
@@ -88,8 +88,10 @@ export async function GET(request) {
     });
     const data = await response.json();
 
-    const url = `https://ani-card.vercel.app/api/cards/vertical?image_url=${encodeURIComponent(
-        data.data.Media.bannerImage
+    console.log(data)
+
+    const url = `https://ani-card.vercel.app/cards/vertical?image_url=${encodeURIComponent(
+        data.data.Media.coverImage.extraLarge
     )}&bg_color=${encodeURIComponent(
         data.data.Media.coverImage.color
     )}&season=${encodeURIComponent(

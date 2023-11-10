@@ -1,3 +1,5 @@
+"use client";
+
 import { Merriweather, Rubik, Roboto_Mono } from "next/font/google";
 
 import { useSearchParams } from 'next/navigation'
