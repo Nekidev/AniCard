@@ -108,7 +108,9 @@ export async function GET(request) {
             : `${data.data.Media.duration} min`
     )}&source=${encodeURIComponent(
         capitalizeFirstLetter(data.data.Media.source.toLowerCase())
-    )}&genres=${encodeURIComponent(data.data.Media.genres.join(","))}`;
+    )}&genres=${encodeURIComponent(data.data.Media.genres.join(","))}&status=${encodeURIComponent(
+        capitalizeFirstLetter(data.data.Media.status.toLowerCase())
+    )}`;
     console.log(url);
 
     const image = await screenshot(url, { width: 1200, height: 3600 }, "#card");
