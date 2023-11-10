@@ -75,7 +75,11 @@ export async function GET(request) {
     )}&duration=${encodeURIComponent(
         data.data.Media.episodes > 1
             ? `${data.data.Media.episodes} episodes`
-            : `${data.data.Media.duration} min`
+            : Math.floor(data.data.Media.duration / 60) > 0
+            ? `${Math.floor(data.data.Media.duration / 60)} hrs ${
+                  data.data.Media.duration % 60
+              } min`
+            : `${data.data.Media.duration % 60} minutes`
     )}&source=${encodeURIComponent(
         capitalizeFirstLetter(data.data.Media.source)
     )}&genres=${encodeURIComponent(
@@ -88,13 +92,16 @@ export async function GET(request) {
 
     const image = await (
         await fetch(
-            `${process.env.SCREENSHOTS_API_URL}?url=${encodeURIComponent(url)}&width=600`
+            `${process.env.SCREENSHOTS_API_URL}?url=${encodeURIComponent(
+                url
+            )}&width=600`
         )
     ).arrayBuffer();
 
     return new Response(image, {
         headers: {
-            "Cache-Control": "public, immutable, no-transform, s-maxage=86400, max-age=86400",
+            "Cache-Control":
+                "public, immutable, no-transform, s-maxage=86400, max-age=86400",
             "Content-Type": "image/png",
         },
     });
