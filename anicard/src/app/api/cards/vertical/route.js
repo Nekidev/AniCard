@@ -8,7 +8,7 @@ query MediaQuery($id:Int) {
         title {
             romaji
             english
-            native|
+            native
             userPreferred
         }
         coverImage {
