@@ -62,7 +62,7 @@ export async function GET(request) {
     const id = parseInt(request.nextUrl.searchParams.get("id"));
     const mode = request.nextUrl.searchParams.get("mode") || "1";
 
-    if (!card_modes.includes(mode)) {
+    if (!card_modes[mode]) {
         return new Response.json({ message: "Invalid mode" }, { status: 400 });
     }
 
