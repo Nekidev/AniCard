@@ -58,6 +58,8 @@ export async function GET(request) {
     });
     const data = await response.json();
 
+    console.log(data);
+
     const url = `https://ani-card.vercel.app/cards/vertical?image_url=${encodeURIComponent(
         data.data.Media.coverImage.extraLarge
     )}&bg_color=${encodeURIComponent(
