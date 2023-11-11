@@ -37,7 +37,7 @@ export default function Home() {
 
         setIsOverflowing(
             extraRef.current.scrollWidth >
-            extraRef.current.getBoundingClientRect().width
+                extraRef.current.getBoundingClientRect().width
         );
     }, []);
 
@@ -80,15 +80,13 @@ export default function Home() {
                                 className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44 relative flex-1 min-h-0"
                                 ref={extraRef}
                             >
-                                {extra.data
-                                    .slice(0, 6)
-                                    .map((imageUrl, index) => (
-                                        <img
-                                            className="rounded-lg max-h-full object-cover object-center block"
-                                            src={imageUrl}
-                                            key={index}
-                                        />
-                                    ))}
+                                {extra.data.map((imageUrl, index) => (
+                                    <img
+                                        className="rounded-lg max-h-full object-cover object-center block"
+                                        src={imageUrl}
+                                        key={index}
+                                    />
+                                ))}
                             </div>
                             {isOverflowing && (
                                 <div
