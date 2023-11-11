@@ -66,7 +66,7 @@ export default function Home() {
                             <option value="2">Horizontal</option>
                         </select>
                         <button
-                            className="rounded p-2 bg-neutral-200 leading-none hover:bg-neutral-300 transition drop-shadow-sm h-full"
+                            className="rounded p-2 bg-neutral-200 leading-none hover:bg-neutral-300 transition drop-shadow-sm h-full border border-neutral-300"
                             onClick={generate}
                         >
                             Generate
@@ -180,12 +180,20 @@ export default function Home() {
                     />
                 </div>
                 <div className="h-px bg-neutral-300 my-4"></div>
-                <Link
-                    href="https://nyeki.dev"
-                    className="underline hover:no-underline"
-                >
-                    Made by Nyeki.py
-                </Link>
+                <div className="flex flex-row items-center justify-between">
+                    <Link
+                        href="https://nyeki.dev"
+                        className="underline hover:no-underline"
+                    >
+                        Made by Nyeki.py
+                    </Link>
+                    <Link
+                        href="https://ko-fi.com/nekidev"
+                        className="underline hover:no-underline"
+                    >
+                        Donate
+                    </Link>
+                </div>
             </div>
         </main>
     );
@@ -197,7 +205,7 @@ function QueryParameter({ name, description, type }) {
             <span
                 className={
                     roboto_mono.className +
-                    " p-1 -my-1 rounded bg-neutral-200 leading-none w-fit border border-neutral-300 whitespace-nowrap"
+                    " p-1 -my-1 rounded bg-neutral-200 leading-none border border-neutral-300 whitespace-nowrap w-20 shrink-0"
                 }
             >
                 {name}
