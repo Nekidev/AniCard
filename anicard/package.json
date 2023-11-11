@@ -9,7 +9,7 @@
         "lint": "next lint"
     },
     "dependencies": {
-        "color-thief-node": "^1.0.4",
+        "color-thief-node": "^1.0.0",
         "next": "14.0.2",
         "react": "^18",
         "react-dom": "^18",
