@@ -28,8 +28,10 @@ const roboto_mono = Roboto_Mono({
 export default function Home() {
     const searchParams = useSearchParams();
 
-    var color = hexToHsl(searchParams.get("color"))
-    const extra = searchParams.get("extra") ? JSON.parse(searchParams.get("extra")) : null;
+    var color = hexToHsl(searchParams.get("color"));
+    const extra = searchParams.get("extra")
+        ? JSON.parse(searchParams.get("extra"))
+        : null;
 
     return (
         <main className={rubik.className + " w-full flex flex-row relative"}>
@@ -58,9 +60,13 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col gap-8">
                     {extra.type == "images" && (
-                        <div className="flex flex-row gap-4 max-w-full max-h-44">
-                            {extra.data.map((imageUrl, index) => (
-                                <img className="rounded-lg h-full object-cover object-center" src={imageUrl} />
+                        <div className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44 aspect-[2/3]">
+                            {extra.data.slice(0, 6).map((imageUrl, index) => (
+                                <img
+                                    className="rounded-lg h-full object-cover object-center"
+                                    src={imageUrl}
+                                    key={index}
+                                />
                             ))}
                         </div>
                     )}
