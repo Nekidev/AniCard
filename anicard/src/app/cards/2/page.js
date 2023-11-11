@@ -62,7 +62,7 @@ export default function Home() {
                     <p className="text-3xl">{searchParams.get("subtitle")}</p>
                 </div>
                 <div className="flex flex-col gap-8 shrink min-h-0">
-                    {extra.type == "images" && (
+                    {(extra && extra.type == "images") && (
                         <div className="flex flex-row shrink min-h-0 w-full relative">
                             <div
                                 className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44 relative flex-1 min-h-0 flex-wrap"
