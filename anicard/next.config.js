@@ -1,6 +1,3 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
-
 if (
     process.env.LD_LIBRARY_PATH == null ||
     !process.env.LD_LIBRARY_PATH.includes(
@@ -12,4 +9,5 @@ if (
     }/node_modules/canvas/build/Release:${process.env.LD_LIBRARY_PATH || ""}`;
 }
 
-module.exports = nextConfig;
+/** @type {import('next').NextConfig} */
+module.exports = {};
