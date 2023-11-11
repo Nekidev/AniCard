@@ -63,7 +63,12 @@ export async function GET(request) {
     const mode = request.nextUrl.searchParams.get("mode") || "1";
 
     if (!card_modes[mode]) {
-        return new Response.json({ message: "Invalid mode" }, { status: 400 });
+        return new Response(JSON.stringify({ message: "Invalid mode" }), {
+            status: 400,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
     }
 
     const response = await fetch("https://graphql.anilist.co", {
