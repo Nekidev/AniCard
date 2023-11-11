@@ -38,14 +38,14 @@ export default function Home() {
                 class="p-8 flex flex-col flex-1 h-screen justify-between"
                 style={{
                     background: adjustBrightness(
-                        searchParams.get("bg_color"),
+                        searchParams.get("color"),
                         170
                     ),
                 }}
             >
                 <div className="flex flex-col gap-2 text-black/80">
                     <span className={"text-lg " + roboto_mono.className}>
-                        {searchParams.get("season")}
+                        {searchParams.get("label")}
                     </span>
                     <h1
                         className={
@@ -54,18 +54,14 @@ export default function Home() {
                     >
                         {searchParams.get("title")}
                     </h1>
-                    <p className="text-3xl">
-                        {searchParams.get("type")} -{" "}
-                        {searchParams.get("duration")} -{" "}
-                        {searchParams.get("status")}
-                    </p>
+                    <p className="text-3xl">{searchParams.get("subtitle")}</p>
                 </div>
                 <div className="flex flex-row items-center gap-4 flex-wrap">
                     {searchParams
-                        .get("genres")
+                        .get("tags")
                         .split(",")
-                        .map((genre) => (
-                            <Genre title={genre} />
+                        .map((tag) => (
+                            <Tag title={tag} />
                         ))}
                 </div>
             </div>
@@ -73,7 +69,7 @@ export default function Home() {
     );
 }
 
-function Genre({ title }) {
+function Tag({ title }) {
     return (
         <div className="py-2 px-4 rounded-full border border-black/80 leading-none text-2xl">
             {title}

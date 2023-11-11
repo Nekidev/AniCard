@@ -1,45 +1,4 @@
-import { capitalizeFirstLetter } from "@/utils";
-
-const animeQuery = `
-query MediaQuery($id:Int) {
-	Media(id:$id) {
-        id
-        idMal
-        title {
-            romaji
-            english
-            native
-            userPreferred
-        }
-        coverImage {
-            extraLarge
-            large
-            medium
-            color
-        }
-        bannerImage
-        description
-        type
-        episodes
-        status
-        startDate {
-            year
-            month
-            day
-        }
-        endDate {
-            year
-            month
-            day
-        }
-        duration
-        source
-        season
-        seasonYear
-        format
-        genres
-    }
-}`;
+import API from "@/lib/apis";
 
 const card_modes = {
     1: {
@@ -59,7 +18,8 @@ const encodeGetParams = (p) =>
         .join("&");
 
 export async function GET(request) {
-    const id = parseInt(request.nextUrl.searchParams.get("id"));
+    const id = parseInt(request.nextUrl.searchParams.get("id").split(":")[1]);
+    const wrapper_code = request.nextUrl.searchParams.get("id").split(":")[0];
     const mode = request.nextUrl.searchParams.get("mode") || "1";
 
     if (!card_modes[mode]) {
@@ -71,50 +31,15 @@ export async function GET(request) {
         });
     }
 
-    const response = await fetch("https://graphql.anilist.co", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        },
-        body: JSON.stringify({
-            query: animeQuery,
-            variables: {
-                id,
-            },
-        }),
-    });
-    const data = await response.json();
+    const card = new API(wrapper_code).getAnime(id);
 
     const url = `https://ani-card.vercel.app/cards/${mode}?image_url=${encodeURIComponent(
-        data.data.Media.coverImage.extraLarge
-    )}&bg_color=${encodeURIComponent(
-        data.data.Media.coverImage.color
-    )}&season=${encodeURIComponent(
-        capitalizeFirstLetter(data.data.Media.season) +
-            " " +
-            data.data.Media.seasonYear
-    )}&title=${encodeURIComponent(
-        data.data.Media.title.userPreferred
-    )}&type=${encodeURIComponent(
-        capitalizeFirstLetter(data.data.Media.format)
-    )}&duration=${encodeURIComponent(
-        data.data.Media.episodes > 1
-            ? `${data.data.Media.episodes} episodes`
-            : Math.floor(data.data.Media.duration / 60) > 0
-            ? `${Math.floor(data.data.Media.duration / 60)} hrs ${
-                  data.data.Media.duration % 60
-              } min`
-            : `${data.data.Media.duration % 60} minutes`
-    )}&source=${encodeURIComponent(
-        capitalizeFirstLetter(data.data.Media.source)
-    )}&genres=${encodeURIComponent(
-        data.data.Media.genres.join(",")
-    )}&status=${encodeURIComponent(
-        capitalizeFirstLetter(data.data.Media.status)
-    )}&status=${encodeURIComponent(
-        capitalizeFirstLetter(data.data.Media.status)
-    )}`;
+        card.imageUrl
+    )}&color=${encodeURIComponent(card.color)}&subtitle=${encodeURIComponent(
+        card.subtitle
+    )}&label=${encodeURIComponent(card.label)}&title=${encodeURIComponent(
+        card.title
+    )}&tags=${encodeURIComponent(card.tags.join(","))}`;
 
     console.log(url);
 
