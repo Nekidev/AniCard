@@ -156,7 +156,7 @@ export default class API {
     wrapper: any;
 
     constructor(wrapper_code: string) {
-        this.wrapper = wrapper_codes[wrapper_code];
+        this.wrapper = new wrapper_codes[wrapper_code]();
     }
 
     async getAnime(id: any): Promise<Card> {
