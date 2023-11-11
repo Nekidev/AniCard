@@ -60,10 +60,10 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col gap-8">
                     {extra.type == "images" && (
-                        <div className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44 aspect-[2/3]">
+                        <div className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44">
                             {extra.data.slice(0, 6).map((imageUrl, index) => (
                                 <img
-                                    className="rounded-lg h-full object-cover object-center"
+                                    className="rounded-lg h-full object-cover object-center aspect-[2/3] block"
                                     src={imageUrl}
                                     key={index}
                                 />
