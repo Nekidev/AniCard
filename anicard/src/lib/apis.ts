@@ -2,7 +2,7 @@ import { capitalizeFirstLetter, getMiddleShade, rgbToHex } from "@/utils";
 
 import { getColor } from "colorthief";
 
-export class Card {
+class Card {
     id: number;
     title: string;
     subtitle: string;
@@ -11,15 +11,23 @@ export class Card {
     imageUrl: string;
     color: string;
 
-    constructor(
-        id: number,
-        title: string,
-        subtitle: string,
-        label: string,
-        tags: Array<string>,
-        imageUrl: string,
-        color: string
-    ) {
+    constructor({
+        id,
+        title,
+        subtitle,
+        label,
+        tags,
+        imageUrl,
+        color,
+    }: {
+        id: number;
+        title: string;
+        subtitle: string;
+        label: string;
+        tags: Array<string>;
+        imageUrl: string;
+        color: string;
+    }) {
         this.id = id;
         this.title = title;
         this.subtitle = subtitle;
@@ -98,10 +106,10 @@ export class AniList extends Wrapper {
         });
         const data = await response.json();
 
-        return new Card(
-            data.data.Media.id,
-            data.data.Media.title.userPreferred,
-            `${capitalizeFirstLetter(data.data.Media.format)} - ${
+        return new Card({
+            id: data.data.Media.id,
+            title: data.data.Media.title.userPreferred,
+            subtitle: `${capitalizeFirstLetter(data.data.Media.format)} - ${
                 data.data.Media.episodes > 1
                     ? `${data.data.Media.episodes} episodes`
                     : Math.floor(data.data.Media.duration / 60) > 0
@@ -110,13 +118,13 @@ export class AniList extends Wrapper {
                       } min`
                     : `${data.data.Media.duration % 60} minutes`
             } - ${capitalizeFirstLetter(data.data.Media.status)}`,
-            `${capitalizeFirstLetter(data.data.Media.season)} ${
+            label: `${capitalizeFirstLetter(data.data.Media.season)} ${
                 data.data.Media.seasonYear
             }`,
-            data.data.Media.genres,
-            data.data.Media.coverImage.extraLarge,
-            data.data.Media.coverImage.color
-        );
+            tags: data.data.Media.genres,
+            imageUrl: data.data.Media.coverImage.extraLarge,
+            color: data.data.Media.coverImage.color,
+        });
     }
 }
 
@@ -127,10 +135,10 @@ export class MyAnimeList extends Wrapper {
         const response = await fetch(this.url + "/anime/" + id + "/full");
         const data = await response.json();
 
-        return new Card(
-            data.mal_id,
-            data.title,
-            `${data.type} - ${
+        return new Card({
+            id: data.mal_id,
+            title: data.title,
+            subtitle: `${data.type} - ${
                 data.episodes > 1
                     ? `${data.episodes} episodes`
                     : Math.floor(data.duration / 60) > 0
@@ -139,11 +147,13 @@ export class MyAnimeList extends Wrapper {
                       } min`
                     : `${data.duration % 60} minutes`
             } - ${data.status}`,
-            `${capitalizeFirstLetter(data.season)} ${data.year}`,
-            Array.from(data.genres.map((v, i) => v.name)),
-            data.images.webp.large_image_url,
-            getMiddleShade(rgbToHex(await getColor(data.images.jpg.image_url)))
-        );
+            label: `${capitalizeFirstLetter(data.season)} ${data.year}`,
+            tags: Array.from(data.genres.map((v, i) => v.name)),
+            imageUrl: data.images.webp.large_image_url,
+            color: getMiddleShade(
+                rgbToHex(await getColor(data.images.jpg.image_url))
+            ),
+        });
     }
 }
 
