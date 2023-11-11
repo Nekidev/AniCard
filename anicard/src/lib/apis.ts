@@ -1,6 +1,7 @@
+import { capitalizeFirstLetter, rgbToHex } from "@/utils";
+
 import { getColorFromURL } from "color-thief-node";
 
-import { capitalizeFirstLetter, getMiddleShade, rgbToHex } from "@/utils";
 
 class Card {
     id: number;
