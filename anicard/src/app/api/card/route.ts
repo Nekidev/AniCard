@@ -47,7 +47,7 @@ export async function GET(request) {
 
     const card = await new API(source).getAnime(id);
 
-    let url = `https://card.nyeki.dev/cards/${style}?image_url=${encodeURIComponent(
+    let url = `${process.env.HOST_URL || "https://card.nyeki.dev"}/cards/${style}?image_url=${encodeURIComponent(
         card.imageUrl
     )}&color=${encodeURIComponent(card.color)}&subtitle=${encodeURIComponent(
         card.subtitle

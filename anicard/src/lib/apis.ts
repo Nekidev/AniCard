@@ -102,7 +102,7 @@ export class AniList extends Wrapper {
         return new Card({
             id: data.data.Media.id,
             title: data.data.Media.title.userPreferred,
-            subtitle: `${capitalizeFirstLetter(data.data.Media.format)} - ${
+            subtitle: `${capitalizeFirstLetter(data.data.Media.format.replace("_", " "))} - ${
                 data.data.Media.episodes > 1
                     ? `${data.data.Media.episodes} episodes`
                     : Math.floor(data.data.Media.duration / 60) > 0
