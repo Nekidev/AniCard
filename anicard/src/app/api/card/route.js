@@ -18,8 +18,8 @@ const encodeGetParams = (p) =>
         .join("&");
 
 export async function GET(request) {
-    const id = parseInt(request.nextUrl.searchParams.get("id").split(":")[1]);
-    const wrapper_code = request.nextUrl.searchParams.get("id").split(":")[0];
+    const id = parseInt(request.nextUrl.searchParams.get("id"));
+    const source = request.nextUrl.searchParams.get("source").toLowerCase() || "anilist";
     const mode = request.nextUrl.searchParams.get("mode") || "1";
 
     if (!card_modes[mode]) {
@@ -31,7 +31,16 @@ export async function GET(request) {
         });
     }
 
-    const card = await (new API(wrapper_code)).getAnime(id);
+    if (!API.validWrapper(source)) {
+        return new Response(JSON.stringify({ message: "Invalid source" }), {
+            status: 400,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    }
+
+    const card = await (new API(source)).getAnime(id);
 
     const url = `https://ani-card.vercel.app/cards/${mode}?image_url=${encodeURIComponent(
         card.imageUrl

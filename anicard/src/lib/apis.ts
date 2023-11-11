@@ -169,6 +169,10 @@ export default class API {
         this.wrapper = new wrapper_codes[wrapper_code]();
     }
 
+    validWrapper(wrapper_code: string): boolean {
+        return wrapper_code in wrapper_codes;
+    }
+
     async getAnime(id: any): Promise<Card> {
         return await this.wrapper.getAnime(id);
     }
