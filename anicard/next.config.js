@@ -10,4 +10,13 @@ if (
 }
 
 /** @type {import('next').NextConfig} */
-module.exports = {};
+module.exports = {
+    webpack: (config, options) => {
+        config.module.rules.push({
+            test: /\.node$/,
+            loader: "node-loader",
+        });
+
+        return config
+    },
+};
