@@ -18,7 +18,7 @@ const merriweather = Merriweather({
 
 const rubik = Rubik({
     subsets: ["latin"],
-    weight: ["400"],
+    weight: ["400", "700", "900"],
 });
 
 const roboto_mono = Roboto_Mono({
@@ -62,11 +62,9 @@ export default function Home() {
                     <p className="text-3xl">{searchParams.get("subtitle")}</p>
                 </div>
                 <div className="flex flex-col gap-8 shrink min-h-0">
-                    {(extra && extra.type == "images") && (
+                    {extra && extra.type == "images" && (
                         <div className="flex flex-row shrink min-h-0 w-full relative">
-                            <div
-                                className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44 relative flex-1 min-h-0 flex-wrap"
-                            >
+                            <div className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44 relative flex-1 min-h-0 flex-wrap">
                                 {extra.data.map((imageUrl, index) => (
                                     <img
                                         className="rounded-lg max-h-full h-full object-cover object-center block"
@@ -75,6 +73,14 @@ export default function Home() {
                                     />
                                 ))}
                             </div>
+                        </div>
+                    )}
+                    {extra && extra.type == "labels" && (
+                        <div className="flex flex-row items-center gap-8 py-4 px-8 rounded-xl text-2xl leading-none w-fit" style={{
+                            backgroundColor: `hsl(${color[0]},${color[1]}%,80%)`
+                        }}>
+                            <div className="font-bold">{extra.data.title}</div>
+                            <div>{extra.data.subtitle}</div>
                         </div>
                     )}
                     <div className="flex flex-row items-center gap-4 flex-wrap">

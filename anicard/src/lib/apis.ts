@@ -4,29 +4,26 @@ import { getQuery } from "@/utils/queries";
 import ColorThief from "@/lib/colorthief";
 
 
-export type ExtraCode = "characters" | "staff" | "studios";
+export type ExtraCode = "characters" | "staff" | "studio";
+
+interface Labels {
+    title: string;
+    subtitle: string;
+}
 
 export class Extra {
     code: ExtraCode;
-    type: "images" | "card";
-    data: Array<string> | Card;
+    type: "images" | "card" | "labels";
+    data: Array<string> | Card | Labels;
 
     constructor(
         code: ExtraCode,
-        type: "images" | "card",
-        data: Array<string> | Card
+        type: "images" | "card" | "labels",
+        data: Array<string> | Card | Labels
     ) {
         this.code = code;
         this.type = type;
         this.data = data;
-    }
-
-    toString() {
-        return JSON.stringify({
-            code: this.code,
-            type: this.type,
-            data: this.data,
-        });
     }
 }
 
@@ -137,10 +134,9 @@ export class AniList extends Wrapper {
                     )
                 ),
                 new Extra(
-                    "studios",
-                    "card",
-                    new Card({
-                        id: data.data.Media.studios.edges[0].node.id,
+                    "studio",
+                    "labels",
+                    {
                         title: Array.from(
                             data.data.Media.studios.edges.map(
                                 (v: any) => v.node.name
@@ -163,7 +159,7 @@ export class AniList extends Wrapper {
                                           .map((v: any) => v.node.name.full)
                                   ).join(", ")}`
                                 : "Unknown director(s)",
-                    })
+                    }
                 ),
             ],
         });
