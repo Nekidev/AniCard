@@ -34,7 +34,7 @@ export default function Home() {
         <main className={rubik.className + " w-full flex flex-row relative"}>
             <img
                 src={searchParams.get("image_url")}
-                className="h-full min-h-full max-h-screen"
+                className="h-screen min-h-full max-h-screen"
             />
             <div
                 class="p-8 flex flex-col flex-1 h-screen justify-between"
