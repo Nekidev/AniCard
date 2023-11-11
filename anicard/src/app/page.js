@@ -137,7 +137,7 @@ export default function Home() {
                     <img src={imageUrl} className="w-full" />
                 ) : (
                     <div className="border-2 border-dashed border-neutral-300 p-8 text-center rounded">
-                        Click on "Generate" to generate your card.
+                        Click on <button className="p-1 -my-1 rounded bg-neutral-200 transition hover:bg-neutral-300 leading-none border border-neutral-300" onClick={generate}>Generate</button> to generate your card.
                     </div>
                 )}
                 <div></div>
@@ -184,12 +184,14 @@ export default function Home() {
                     <Link
                         href="https://nyeki.dev"
                         className="underline hover:no-underline"
+                        target="_blank"
                     >
                         Made by Nyeki.py
                     </Link>
                     <Link
                         href="https://ko-fi.com/nekidev"
                         className="underline hover:no-underline"
+                        target="_blank"
                     >
                         Donate
                     </Link>
