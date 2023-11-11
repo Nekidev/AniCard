@@ -77,7 +77,7 @@ export default function Home() {
                     )}
                     {extra && extra.type == "labels" && (
                         <div className="flex flex-row items-center gap-8 py-4 px-8 rounded-xl text-2xl leading-none w-fit" style={{
-                            backgroundColor: `hsl(${color[0]},${color[1]}%,80%)`
+                            backgroundColor: `hsl(${color[0]},${color[1]}%,85%)`
                         }}>
                             <div className="font-bold">{extra.data.title}</div>
                             <div>{extra.data.subtitle}</div>
