@@ -1,6 +1,6 @@
-import { capitalizeFirstLetter, getMiddleShade, rgbToHex } from "@/utils";
+import { getColorFromURL } from "color-thief-node";
 
-import { getColor } from "colorthief";
+import { capitalizeFirstLetter, getMiddleShade, rgbToHex } from "@/utils";
 
 class Card {
     id: number;
@@ -133,7 +133,7 @@ export class MyAnimeList extends Wrapper {
 
     async getAnime(id: number): Promise<Card> {
         const response = await fetch(this.url + "/anime/" + id + "/full");
-        const data = await response.json();
+        const data = (await response.json()).data;
 
         return new Card({
             id: data.mal_id,
@@ -148,11 +148,11 @@ export class MyAnimeList extends Wrapper {
                     : `${data.duration % 60} minutes`
             } - ${data.status}`,
             label: `${capitalizeFirstLetter(data.season)} ${data.year}`,
-            tags: Array.from(data.genres.map((v, i) => v.name)),
-            imageUrl: data.images.webp.large_image_url,
-            color: getMiddleShade(
-                rgbToHex(await getColor(data.images.jpg.image_url))
+            tags: Array.from(
+                data.genres.map((v: { name: string }, i: number) => v.name)
             ),
+            imageUrl: data.images.webp.large_image_url,
+            color: rgbToHex(await getColorFromURL(data.images.jpg.image_url)),
         });
     }
 }

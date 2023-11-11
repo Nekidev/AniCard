@@ -31,7 +31,7 @@ export async function GET(request) {
         });
     }
 
-    const card = new API(wrapper_code).getAnime(id);
+    const card = await (new API(wrapper_code)).getAnime(id);
 
     const url = `https://ani-card.vercel.app/cards/${mode}?image_url=${encodeURIComponent(
         card.imageUrl
