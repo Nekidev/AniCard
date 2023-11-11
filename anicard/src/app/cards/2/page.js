@@ -29,18 +29,6 @@ const roboto_mono = Roboto_Mono({
 export default function Home() {
     const searchParams = useSearchParams();
 
-    const extraRef = React.useRef(null);
-    const [isOverflowing, setIsOverflowing] = React.useState(false);
-
-    React.useEffect(() => {
-        if (!extraRef.current) return;
-
-        setIsOverflowing(
-            extraRef.current.scrollWidth >
-                extraRef.current.getBoundingClientRect().width
-        );
-    }, []);
-
     var color = hexToHsl(searchParams.get("color"));
     const hslColor = `hsl(${color[0]},${color[1]}%,90%)`;
 
@@ -77,25 +65,16 @@ export default function Home() {
                     {extra.type == "images" && (
                         <div className="flex flex-row shrink min-h-0 w-full relative">
                             <div
-                                className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44 relative flex-1 min-h-0"
-                                ref={extraRef}
+                                className="flex flex-row gap-4 max-w-full overflow-hidden max-h-44 relative flex-1 min-h-0 flex-wrap"
                             >
                                 {extra.data.map((imageUrl, index) => (
                                     <img
-                                        className="rounded-lg max-h-full object-cover object-center block"
+                                        className="rounded-lg max-h-full h-full object-cover object-center block"
                                         src={imageUrl}
                                         key={index}
                                     />
                                 ))}
                             </div>
-                            {isOverflowing && (
-                                <div
-                                    className={`absolute top-0 bottom-0 right-0 w-10 block z-20`}
-                                    style={{
-                                        backgroundImage: `linear-gradient(to right, transparent, ${hslColor})`,
-                                    }}
-                                ></div>
-                            )}
                         </div>
                     )}
                     <div className="flex flex-row items-center gap-4 flex-wrap">
