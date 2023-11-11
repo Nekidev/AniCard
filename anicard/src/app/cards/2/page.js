@@ -8,7 +8,7 @@ import { Merriweather, Rubik, Roboto_Mono } from "next/font/google";
 
 import { useSearchParams } from "next/navigation";
 
-import { adjustBrightness } from "@/utils";
+import { hexToHsl } from "@/utils";
 
 const merriweather = Merriweather({
     subsets: ["latin"],
@@ -28,6 +28,8 @@ const roboto_mono = Roboto_Mono({
 export default function Home() {
     const searchParams = useSearchParams();
 
+    var color = hexToHsl(searchParams.get("color"))
+
     return (
         <main className={rubik.className + " w-full flex flex-row"}>
             <img
@@ -37,10 +39,7 @@ export default function Home() {
             <div
                 class="p-8 flex flex-col flex-1 h-screen justify-between"
                 style={{
-                    background: adjustBrightness(
-                        searchParams.get("color"),
-                        170
-                    ),
+                    background: `hsl(${color[0]}, ${color[1]}%, 90%)`,
                 }}
             >
                 <div className="flex flex-col gap-2 text-black/80">

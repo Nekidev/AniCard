@@ -1,6 +1,6 @@
 import { capitalizeFirstLetter, rgbToHex } from "@/utils";
 
-import { getColor } from "colorthief/src/color-thief-node";
+import ColorThief from "@/lib/colorthief";
 
 
 class Card {
@@ -153,7 +153,7 @@ export class MyAnimeList extends Wrapper {
                 data.genres.map((v: { name: string }, i: number) => v.name)
             ),
             imageUrl: data.images.webp.large_image_url,
-            color: rgbToHex(await getColor(data.images.jpg.image_url)),
+            color: rgbToHex(await ColorThief.getColor(data.images.jpg.image_url)),
         });
     }
 }
