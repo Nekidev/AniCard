@@ -3,7 +3,6 @@ import { getQuery } from "@/utils/queries";
 
 import ColorThief from "@/lib/colorthief";
 
-
 export type ExtraCode = "characters" | "staff" | "studio";
 
 interface Labels {
@@ -99,7 +98,9 @@ export class AniList extends Wrapper {
         return new Card({
             id: data.data.Media.id,
             title: data.data.Media.title.userPreferred,
-            subtitle: `${capitalizeFirstLetter(data.data.Media.format.replace("_", " "))} - ${
+            subtitle: `${capitalizeFirstLetter(
+                data.data.Media.format.replace("_", " ")
+            )} - ${
                 data.data.Media.episodes > 1
                     ? `${data.data.Media.episodes} episodes`
                     : Math.floor(data.data.Media.duration / 60) > 0
@@ -121,7 +122,7 @@ export class AniList extends Wrapper {
                     Array.from(
                         data.data.Media.characters.edges.map(
                             (v: any) => v.node.image.large
-                        )
+                        ).slice(0, 10)
                     )
                 ),
                 new Extra(
@@ -130,37 +131,31 @@ export class AniList extends Wrapper {
                     Array.from(
                         data.data.Media.staff.edges.map(
                             (v: any) => v.node.image.large
-                        )
+                        ).slice(0, 10)
                     )
                 ),
-                new Extra(
-                    "studio",
-                    "labels",
-                    {
-                        title: Array.from(
-                            data.data.Media.studios.edges.map(
-                                (v: any) => v.node.name
+                new Extra("studio", "labels", {
+                    title: Array.from(
+                        data.data.Media.studios.edges.map(
+                            (v: any) => v.node.name
+                        )
+                    ).join(", "),
+                    subtitle:
+                        Array.from(
+                            data.data.Media.staff.edges.filter(
+                                (v: any) => v.role.toLowerCase() == "director"
                             )
-                        ).join(", "),
-                        subtitle:
-                            Array.from(
-                                data.data.Media.staff.edges.filter(
-                                    (v: any) =>
-                                        v.role.toLowerCase() == "director"
-                                )
-                            ).length > 0
-                                ? `Directed by ${Array.from(
-                                      data.data.Media.staff.edges
-                                          .filter(
-                                              (v: any) =>
-                                                  v.role.toLowerCase() ==
-                                                  "director"
-                                          )
-                                          .map((v: any) => v.node.name.full)
-                                  ).join(", ")}`
-                                : "Unknown director(s)",
-                    }
-                ),
+                        ).length > 0
+                            ? `Directed by ${Array.from(
+                                  data.data.Media.staff.edges
+                                      .filter(
+                                          (v: any) =>
+                                              v.role.toLowerCase() == "director"
+                                      )
+                                      .map((v: any) => v.node.name.full)
+                              ).join(", ")}`
+                            : "Unknown director(s)",
+                }),
             ],
         });
     }
@@ -169,9 +164,26 @@ export class AniList extends Wrapper {
 export class MyAnimeList extends Wrapper {
     url = "https://api.jikan.moe/v4";
 
+    async getAnimeCharacters(id: string): Promise<Array<string>> {
+        const response = await fetch(this.url + "/anime/" + id + "/characters");
+        const data = (await response.json()).data;
+
+        return data;
+    }
+
+    async getAnimeStaff(id: string): Promise<Array<string>> {
+        const response = await fetch(this.url + "/anime/" + id + "/staff");
+        const data = (await response.json()).data;
+
+        return data;
+    }
+
     async getAnime(id: string): Promise<Card> {
         const response = await fetch(this.url + "/anime/" + id + "/full");
         const data = (await response.json()).data;
+
+        const characters = await this.getAnimeCharacters(id);
+        const staff = await this.getAnimeStaff(id);
 
         return new Card({
             id: data.mal_id,
@@ -193,6 +205,47 @@ export class MyAnimeList extends Wrapper {
             color: rgbToHex(
                 await ColorThief.getColor(data.images.jpg.image_url)
             ),
+            extras: [
+                new Extra(
+                    "characters",
+                    "images",
+                    Array.from(
+                        characters.map(
+                            (v: any) => v.character.images.webp.image_url
+                        ).slice(0, 10)
+                    )
+                ),
+                new Extra(
+                    "staff",
+                    "images",
+                    Array.from(
+                        staff.map((v: any) => v.person.images.jpg.image_url).slice(0, 10)
+                    )
+                ),
+                new Extra("studio", "labels", {
+                    title: Array.from(
+                        data.studios.map((v: any) => v.name)
+                    ).join(", "),
+                    subtitle:
+                        Array.from(
+                            staff.filter((v: any) =>
+                                v.positions
+                                    .map((j: string) => j.toLowerCase())
+                                    .includes("director")
+                            )
+                        ).length > 0
+                            ? `Directed by ${Array.from(
+                                staff.filter((v: any) =>
+                                v.positions
+                                    .map((j: string) => j.toLowerCase())
+                                    .includes("director")
+                            )
+                              )
+                                  .map((v: any) => v.person.name.split(", ").reverse().join(" "))
+                                  .join(", ")}`
+                            : "Unknown director(s)",
+                }),
+            ],
         });
     }
 }
