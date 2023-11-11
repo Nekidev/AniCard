@@ -29,6 +29,7 @@ export default function Home() {
     const searchParams = useSearchParams();
 
     var color = hexToHsl(searchParams.get("color"))
+    const extra = searchParams.get("extra") ? JSON.parse(searchParams.get("extra")) : null;
 
     return (
         <main className={rubik.className + " w-full flex flex-row relative"}>
@@ -37,7 +38,7 @@ export default function Home() {
                 className="h-screen min-h-full max-h-screen"
             />
             <div
-                class="p-8 flex flex-col flex-1 h-screen justify-between"
+                class="p-8 flex flex-col flex-1 h-screen justify-between relative"
                 style={{
                     background: `hsl(${color[0]}, ${color[1]}%, 90%)`,
                 }}
@@ -55,13 +56,22 @@ export default function Home() {
                     </h1>
                     <p className="text-3xl">{searchParams.get("subtitle")}</p>
                 </div>
-                <div className="flex flex-row items-center gap-4 flex-wrap">
-                    {searchParams
-                        .get("tags")
-                        .split(",")
-                        .map((tag) => (
-                            <Tag title={tag} />
-                        ))}
+                <div className="flex flex-col gap-8">
+                    {extra.type == "images" && (
+                        <div className="flex flex-row gap-4 max-w-full max-h-44">
+                            {extra.data.map((imageUrl, index) => (
+                                <img className="rounded-lg h-full object-cover object-center" src={imageUrl} />
+                            ))}
+                        </div>
+                    )}
+                    <div className="flex flex-row items-center gap-4 flex-wrap">
+                        {searchParams
+                            .get("tags")
+                            .split(",")
+                            .map((tag) => (
+                                <Tag title={tag} />
+                            ))}
+                    </div>
                 </div>
             </div>
         </main>

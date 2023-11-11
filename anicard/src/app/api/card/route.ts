@@ -1,6 +1,6 @@
-import API from "@/lib/apis";
+import API, { WrapperCode, ExtraCode, Extra } from "@/lib/apis";
 
-const card_modes = {
+const card_styles = {
     1: {
         width: 1200,
         zoom: 2,
@@ -12,20 +12,23 @@ const card_modes = {
     },
 };
 
-const encodeGetParams = (p) =>
+const encodeGetParams = (p: object) =>
     Object.entries(p)
         .map((kv) => kv.map(encodeURIComponent).join("="))
         .join("&");
 
+type CardStyle = "1" | "2";
+
 export async function GET(request) {
-    const id = parseInt(request.nextUrl.searchParams.get("id"));
-    const source = (
+    const id: string = request.nextUrl.searchParams.get("id");
+    const source: WrapperCode = (
         request.nextUrl.searchParams.get("source") || "anilist"
     ).toLowerCase();
-    const mode = request.nextUrl.searchParams.get("mode") || "1";
+    const style: CardStyle = request.nextUrl.searchParams.get("style") || "1";
+    const extra: ExtraCode | null = request.nextUrl.searchParams.get("extra");
 
-    if (!card_modes[mode]) {
-        return new Response(JSON.stringify({ message: "Invalid mode" }), {
+    if (!card_styles[style]) {
+        return new Response(JSON.stringify({ message: "Invalid style" }), {
             status: 400,
             headers: {
                 "Content-Type": "application/json",
@@ -44,7 +47,7 @@ export async function GET(request) {
 
     const card = await new API(source).getAnime(id);
 
-    const url = `https://ani-card.vercel.app/cards/${mode}?image_url=${encodeURIComponent(
+    let url = `https://card.nyeki.dev/cards/${style}?image_url=${encodeURIComponent(
         card.imageUrl
     )}&color=${encodeURIComponent(card.color)}&subtitle=${encodeURIComponent(
         card.subtitle
@@ -52,13 +55,19 @@ export async function GET(request) {
         card.title
     )}&tags=${encodeURIComponent(card.tags.join(","))}`;
 
+    if (extra && card.extras.map((v: Extra) => v.code.toString()).includes(extra.toLowerCase())) {
+        url += `&extra=${encodeURIComponent(
+            JSON.stringify(card.extras.filter((v: Extra) => v.code == extra)[0])
+        )}`;
+    }
+
     console.log(url);
 
     const image = await (
         await fetch(
             `${process.env.SCREENSHOTS_API_URL}?url=${encodeURIComponent(
                 url
-            )}&${encodeGetParams(card_modes[mode])}`
+            )}&${encodeGetParams(card_styles[style])}`
         )
     ).arrayBuffer();
 

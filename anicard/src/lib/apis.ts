@@ -1,33 +1,63 @@
 import { capitalizeFirstLetter, rgbToHex } from "@/utils";
+import { getQuery } from "@/utils/queries";
 
 import ColorThief from "@/lib/colorthief";
 
 
+export type ExtraCode = "characters" | "staff" | "studios";
+
+export class Extra {
+    code: ExtraCode;
+    type: "images" | "card";
+    data: Array<string> | Card;
+
+    constructor(
+        code: ExtraCode,
+        type: "images" | "card",
+        data: Array<string> | Card
+    ) {
+        this.code = code;
+        this.type = type;
+        this.data = data;
+    }
+
+    toString() {
+        return JSON.stringify({
+            code: this.code,
+            type: this.type,
+            data: this.data,
+        });
+    }
+}
+
 class Card {
-    id: number;
+    id: string | number;
     title: string;
-    subtitle: string;
-    label: string;
-    tags: Array<string>;
-    imageUrl: string;
-    color: string;
+    subtitle: string | null = null;
+    label: string | null = null;
+    tags: Array<string> | null = null;
+    imageUrl: string | null = null;
+    color: string | null = null;
+    extras: Array<Extra> = [];
 
     constructor({
         id,
         title,
-        subtitle,
-        label,
-        tags,
-        imageUrl,
-        color,
+        subtitle = null,
+        label = null,
+        tags = null,
+        imageUrl = null,
+        color = null,
+        extras = [],
     }: {
-        id: number;
+        id: number | string;
         title: string;
-        subtitle: string;
-        label: string;
-        tags: Array<string>;
-        imageUrl: string;
-        color: string;
+        subtitle?: string;
+        label?: string;
+        tags?: Array<string>;
+        imageUrl?: string;
+        color?: string;
+        extras?: Array<Extra>;
     }) {
         this.id = id;
         this.title = title;
@@ -36,13 +66,14 @@ class Card {
         this.tags = tags;
         this.imageUrl = imageUrl;
         this.color = color;
+        this.extras = extras;
     }
 }
 
 class Wrapper {
     url: string;
 
-    async getAnime(id: number): Promise<Card> {
+    async getAnime(id: number | string): Promise<Card> {
         throw new Error("Method not implemented.");
     }
 }
@@ -50,47 +81,8 @@ class Wrapper {
 export class AniList extends Wrapper {
     url = "https://graphql.anilist.co";
 
-    async getAnime(id: number): Promise<Card> {
-        const query = `
-        query MediaQuery($id:Int) {
-            Media(id:$id) {
-                id
-                idMal
-                title {
-                    romaji
-                    english
-                    native
-                    userPreferred
-                }
-                coverImage {
-                    extraLarge
-                    large
-                    medium
-                    color
-                }
-                bannerImage
-                description
-                type
-                episodes
-                status
-                startDate {
-                    year
-                    month
-                    day
-                }
-                endDate {
-                    year
-                    month
-                    day
-                }
-                duration
-                source
-                season
-                seasonYear
-                format
-                genres
-            }
-        }`;
+    async getAnime(id: string): Promise<Card> {
+        const query = getQuery("anilist-anime");
 
         const response = await fetch(this.url, {
             method: "POST",
@@ -101,7 +93,7 @@ export class AniList extends Wrapper {
             body: JSON.stringify({
                 query,
                 variables: {
-                    id,
+                    id: Number(id),
                 },
             }),
         });
@@ -125,6 +117,55 @@ export class AniList extends Wrapper {
             tags: data.data.Media.genres,
             imageUrl: data.data.Media.coverImage.extraLarge,
             color: data.data.Media.coverImage.color,
+            extras: [
+                new Extra(
+                    "characters",
+                    "images",
+                    Array.from(
+                        data.data.Media.characters.edges.map(
+                            (v: any) => v.node.image.large
+                        )
+                    )
+                ),
+                new Extra(
+                    "staff",
+                    "images",
+                    Array.from(
+                        data.data.Media.staff.edges.map(
+                            (v: any) => v.node.image.large
+                        )
+                    )
+                ),
+                new Extra(
+                    "studios",
+                    "card",
+                    new Card({
+                        id: data.data.Media.studios.edges[0].node.id,
+                        title: Array.from(
+                            data.data.Media.studios.edges.map(
+                                (v: any) => v.node.name
+                            )
+                        ).join(", "),
+                        subtitle:
+                            Array.from(
+                                data.data.Media.staff.edges.filter(
+                                    (v: any) =>
+                                        v.role.toLowerCase() == "director"
+                                )
+                            ).length > 0
+                                ? `Directed by ${Array.from(
+                                      data.data.Media.staff.edges
+                                          .filter(
+                                              (v: any) =>
+                                                  v.role.toLowerCase() ==
+                                                  "director"
+                                          )
+                                          .map((v: any) => v.node.name.full)
+                                  ).join(", ")}`
+                                : "Unknown director(s)",
+                    })
+                ),
+            ],
         });
     }
 }
@@ -132,7 +173,7 @@ export class AniList extends Wrapper {
 export class MyAnimeList extends Wrapper {
     url = "https://api.jikan.moe/v4";
 
-    async getAnime(id: number): Promise<Card> {
+    async getAnime(id: string): Promise<Card> {
         const response = await fetch(this.url + "/anime/" + id + "/full");
         const data = (await response.json()).data;
 
@@ -153,7 +194,9 @@ export class MyAnimeList extends Wrapper {
                 data.genres.map((v: { name: string }, i: number) => v.name)
             ),
             imageUrl: data.images.webp.large_image_url,
-            color: rgbToHex(await ColorThief.getColor(data.images.jpg.image_url)),
+            color: rgbToHex(
+                await ColorThief.getColor(data.images.jpg.image_url)
+            ),
         });
     }
 }
@@ -162,19 +205,20 @@ const wrapper_codes = {
     anilist: AniList,
     myanimelist: MyAnimeList,
 };
+export type WrapperCode = "myanimelist" | "anilist";
 
 export default class API {
     wrapper: any;
 
-    constructor(wrapper_code: string) {
+    constructor(wrapper_code: WrapperCode) {
         this.wrapper = new wrapper_codes[wrapper_code]();
     }
 
-    validWrapper(wrapper_code: string): boolean {
+    validWrapper(wrapper_code: WrapperCode): boolean {
         return wrapper_code in wrapper_codes;
     }
 
-    async getAnime(id: any): Promise<Card> {
+    async getAnime(id: number | string): Promise<Card> {
         return await this.wrapper.getAnime(id);
     }
 }

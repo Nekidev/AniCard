@@ -1,0 +1,62 @@
+query MediaQuery($id: Int) {
+    Media(id: $id) {
+        id
+        idMal
+        title {
+            userPreferred
+        }
+        coverImage {
+            extraLarge
+            color
+        }
+        bannerImage
+        description
+        type
+        episodes
+        status
+        duration
+        season
+        seasonYear
+        format
+        genres
+        studios(isMain: true) {
+            edges {
+                id
+                isMain
+                node {
+                    id
+                    name
+                    isAnimationStudio
+                }
+            }
+        }
+        staff(sort: RELEVANCE) {
+            edges {
+                id
+                node {
+                    id
+                    name {
+                        full
+                    }
+                    image {
+                        large
+                    }
+                }
+                role
+            }
+        }
+        characters(sort: RELEVANCE, role: MAIN) {
+            edges {
+                id
+                node {
+                    name {
+                        full
+                    }
+                    image {
+                        large
+                    }
+                }
+            }
+        }
+    }
+}
