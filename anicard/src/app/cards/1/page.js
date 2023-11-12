@@ -29,6 +29,11 @@ export default function Home() {
     const searchParams = useSearchParams();
 
     const color = hexToHsl(searchParams.get("color"));
+    const hslColor = `hsl(${color[0]},${color[1]}%,90%)`;
+
+    const extra = searchParams.get("extra")
+        ? JSON.parse(searchParams.get("extra"))
+        : null;
 
     return (
         <main className={rubik.className}>
@@ -50,17 +55,28 @@ export default function Home() {
                     >
                         {searchParams.get("title")}
                     </h1>
-                    <p className="text-2xl">
-                        {searchParams.get("subtitle")}
-                    </p>
+                    <p className="text-2xl">{searchParams.get("subtitle")}</p>
                 </div>
-                <div className="flex flex-row items-center gap-4 flex-wrap">
-                    {searchParams
-                        .get("tags")
-                        .split(",")
-                        .map((tag) => (
-                            <Tag title={tag} />
-                        ))}
+                <div className="flex flex-col gap-8">
+                    {extra && extra.type == "labels" && (
+                        <div
+                            className="flex flex-col items-start gap-2 p-4 rounded-xl text-2xl leading-none"
+                            style={{
+                                backgroundColor: `hsl(${color[0]},${color[1]}%,85%)`,
+                            }}
+                        >
+                            <div className="font-bold">{extra.data.title}</div>
+                            <div>{extra.data.subtitle}</div>
+                        </div>
+                    )}
+                    <div className="flex flex-row items-center gap-4 flex-wrap">
+                        {searchParams
+                            .get("tags")
+                            .split(",")
+                            .map((tag) => (
+                                <Tag title={tag} />
+                            ))}
+                    </div>
                 </div>
             </div>
         </main>
