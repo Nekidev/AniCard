@@ -60,7 +60,7 @@ export default function Home() {
                 <div className="flex flex-col gap-8">
                     {extra && extra.type == "labels" && (
                         <div
-                            className="flex flex-col items-start gap-2 p-4 rounded-xl text-2xl leading-none"
+                            className="flex flex-col items-start gap-2 p-4 rounded-xl text-xl leading-none"
                             style={{
                                 backgroundColor: `hsl(${color[0]},${color[1]}%,85%)`,
                             }}
