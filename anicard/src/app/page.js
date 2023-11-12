@@ -50,7 +50,7 @@ export default function Home() {
                         <input
                             type="number"
                             min="1"
-                            placeholder="Paste an AniList anime ID here"
+                            placeholder="AniList anime ID"
                             className={
                                 "border border-neutral-100 drop-shadow-sm p-2 rounded leading-none flex-1 " +
                                 roboto_mono.className
@@ -61,6 +61,7 @@ export default function Home() {
                         <select
                             className="border border-neutral-100 drop-shadow-sm p-2 rounded leading-none"
                             ref={styleRef}
+                            defaultValue={"2"}
                         >
                             <option value="1">Vertical</option>
                             <option value="2">Horizontal</option>
@@ -134,10 +135,26 @@ export default function Home() {
                     </div>
                 </div>
                 {imageUrl ? (
-                    <img src={imageUrl} className="w-full" />
+                    <img
+                        src={imageUrl}
+                        className="w-full"
+                        onError={() => {
+                            setImageUrl(null);
+                            alert(
+                                "Looks like there was an error generating this image! Are you sure the ID is correct? Mangas are not supported ATM."
+                            );
+                        }}
+                    />
                 ) : (
                     <div className="border-2 border-dashed border-neutral-300 p-8 text-center rounded">
-                        Click on <button className="p-1 -my-1 rounded bg-neutral-200 transition hover:bg-neutral-300 leading-none border border-neutral-300" onClick={generate}>Generate</button> to generate your card.
+                        Click on{" "}
+                        <button
+                            className="p-1 -my-1 rounded bg-neutral-200 transition hover:bg-neutral-300 leading-none border border-neutral-300"
+                            onClick={generate}
+                        >
+                            Generate
+                        </button>{" "}
+                        to generate your card.
                     </div>
                 )}
                 <div></div>
@@ -147,13 +164,36 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col gap-2">
                     <span className="font-bold">Endpoint:</span>
-                    <div
-                        className={
-                            "bg-white text-sm border border-neutral-100 drop-shadow-sm p-2 rounded leading-none flex-1 select-all " +
-                            roboto_mono.className
-                        }
-                    >
-                        GET https://card.nyeki.dev/api/card
+                    <div className="relative w-full">
+                        <div
+                            className={
+                                "bg-white text-sm border border-neutral-100 drop-shadow-sm p-2 rounded leading-none flex-1 select-all " +
+                                roboto_mono.className
+                            }
+                        >
+                            GET https://card.nyeki.dev/api/card
+                        </div>
+                        <Link
+                            href="https://card.nyeki.dev/api/card"
+                            className="absolute top-0 bottom-0 right-2 my-auto transition text-neutral-500 hover:text-neutral-700 p-2 -m-2"
+                            title="Open in a new tab"
+                            target="_blank"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-4 h-4"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                                />
+                            </svg>
+                        </Link>
                     </div>
                 </div>
                 <div className="flex flex-col gap-4">
@@ -179,7 +219,7 @@ export default function Home() {
                         type="String"
                     />
                 </div>
-                <div className="h-px bg-neutral-300 my-4"></div>
+                <div className="h-px bg-neutral-300 my-8"></div>
                 <div className="flex flex-row items-center justify-between">
                     <Link
                         href="https://nyeki.dev"
